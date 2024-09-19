@@ -52,6 +52,7 @@ func TestProductService_CreateProduct_Success(t *testing.T) {
 		Name:        "Sanduíche",
 		Price:       12.50,
 		Description: "Delicioso sanduíche",
+		CategoryID:  uuid.New(),
 	}
 
 	mockRepo.On("Create", ctx, testProduct).Return(nil)
