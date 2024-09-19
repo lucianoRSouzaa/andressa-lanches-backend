@@ -7,6 +7,15 @@ MIGRATIONS_DIR := ./db/migrations
 # Variáveis de ambiente
 export DATABASE_URL
 
+
+.PHONY: build
+build:
+	@go build -o bin/andressa_lanches ./cmd/andressa-lanches
+
+.PHONY: run
+run:
+	@go run ./cmd/andressa-lanches
+
 # Criar uma nova migração
 .PHONY: migrate-new
 migrate-new:
@@ -60,6 +69,10 @@ coverage: test-cover
 	@go tool cover -html=coverage.out -o coverage.html
 	@echo "Relatório de cobertura gerado em coverage.html"
 
+.PHONY: swag
+swag:
+	@swag init -g ./cmd/andressa-lanches/main.go
+
 # Ajuda
 .PHONY: help
 help:
@@ -72,3 +85,6 @@ help:
 	@echo "  make test               - Executa os testes"
 	@echo "  make test-cover         - Executa os testes e gera um relatório de cobertura"
 	@echo "  make coverage           - Gera um relatório de cobertura em HTML"
+	@echo "  make swag               - Gera a documentação da API com Swag"
+	@echo "  make build              - Compila o aplicativo"
+	@echo "  make run                - Executa o aplicativo"
