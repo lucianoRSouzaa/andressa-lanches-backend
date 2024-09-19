@@ -27,11 +27,8 @@ func NewProductService(productRepo product.Repository) ProductService {
 }
 
 func (s *productService) CreateProduct(ctx context.Context, p *product.Product) error {
-	if p.Name == "" {
-		return errors.New("o nome do produto é obrigatório")
-	}
-	if p.Price <= 0 {
-		return errors.New("o preço do produto deve ser positivo")
+	if err := p.Validate(); err != nil {
+		return err
 	}
 
 	return s.productRepo.Create(ctx, p)
