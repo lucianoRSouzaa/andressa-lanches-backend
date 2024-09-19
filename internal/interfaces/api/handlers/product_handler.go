@@ -41,7 +41,12 @@ func CreateProductHandler(service services.ProductService) gin.HandlerFunc {
 
 		err := service.CreateProduct(c.Request.Context(), &p)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			switch err {
+			case product.ErrProductNameRequired, product.ErrProductPricePositive, product.ErrProductCategoryID:
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
 			return
 		}
 
