@@ -27,8 +27,8 @@ func NewCategoryService(categoryRepo category.Repository) CategoryService {
 }
 
 func (s *categoryService) CreateCategory(ctx context.Context, c *category.Category) error {
-	if c.Name == "" {
-		return errors.New("o nome da categoria é obrigatório")
+	if err := c.Validate(); err != nil {
+		return err
 	}
 
 	return s.categoryRepo.Create(ctx, c)
@@ -54,8 +54,8 @@ func (s *categoryService) UpdateCategory(ctx context.Context, c *category.Catego
 	if c.ID == uuid.Nil {
 		return errors.New("ID da categoria é obrigatório")
 	}
-	if c.Name == "" {
-		return errors.New("o nome da categoria é obrigatório")
+	if err := c.Validate(); err != nil {
+		return err
 	}
 
 	existingCategory, err := s.categoryRepo.GetByID(ctx, c.ID)
