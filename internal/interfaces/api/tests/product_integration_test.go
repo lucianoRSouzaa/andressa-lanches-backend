@@ -269,6 +269,7 @@ func TestUpdateProduct_NotFound(t *testing.T) {
 		Name:        "New Name",
 		Description: "New Description",
 		Price:       19.99,
+		CategoryID:  uuid.New(),
 	}
 	payload, _ := json.Marshal(updatedProduct)
 
