@@ -39,7 +39,7 @@ func (repo *InMemoryProductRepository) GetByID(ctx context.Context, id uuid.UUID
 	if p, exists := repo.products[id]; exists {
 		return p, nil
 	}
-	return nil, errors.New("product not found")
+	return nil, nil
 }
 
 func (repo *InMemoryProductRepository) Update(ctx context.Context, p *product.Product) error {
