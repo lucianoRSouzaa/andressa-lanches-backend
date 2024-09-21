@@ -54,11 +54,8 @@ func (s *productService) UpdateProduct(ctx context.Context, p *product.Product) 
 	if p.ID == uuid.Nil {
 		return errors.New("ID do produto é obrigatório")
 	}
-	if p.Name == "" {
-		return errors.New("o nome do produto é obrigatório")
-	}
-	if p.Price <= 0 {
-		return errors.New("o preço do produto deve ser positivo")
+	if err := p.Validate(); err != nil {
+		return err
 	}
 
 	existingProduct, err := s.productRepo.GetByID(ctx, p.ID)
@@ -66,7 +63,7 @@ func (s *productService) UpdateProduct(ctx context.Context, p *product.Product) 
 		return err
 	}
 	if existingProduct == nil {
-		return errors.New("produto não encontrado")
+		return product.ErrProductNotFound
 	}
 
 	return s.productRepo.Update(ctx, p)
