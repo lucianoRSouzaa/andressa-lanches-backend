@@ -41,7 +41,12 @@ func CreateAdditionHandler(service services.AdditionService) gin.HandlerFunc {
 
 		err := service.CreateAddition(c.Request.Context(), &add)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			switch err {
+			case addition.ErrAdditionNameRequired, addition.ErrAdditionPriceRequired:
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
 			return
 		}
 
