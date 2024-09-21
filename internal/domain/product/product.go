@@ -10,6 +10,7 @@ var (
 	ErrProductNameRequired  = errors.New("o nome do produto é obrigatório")
 	ErrProductPricePositive = errors.New("o preço do produto deve ser positivo")
 	ErrProductCategoryID    = errors.New("o ID da categoria do produto é obrigatório")
+	ErrProductNotFound      = errors.New("produto não encontrado")
 )
 
 type Product struct {
