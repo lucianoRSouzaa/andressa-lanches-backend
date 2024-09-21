@@ -41,7 +41,12 @@ func CreateCategoryHandler(service services.CategoryService) gin.HandlerFunc {
 
 		err := service.CreateCategory(c.Request.Context(), &cte)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			switch err {
+			case category.ErrCategoryNameRequired:
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
 			return
 		}
 
