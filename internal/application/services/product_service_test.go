@@ -142,9 +142,10 @@ func TestProductService_UpdateProduct_Success(t *testing.T) {
 
 	productID := uuid.New()
 	updatedProduct := &product.Product{
-		ID:    productID,
-		Name:  "Sanduíche Atualizado",
-		Price: 15.00,
+		ID:         productID,
+		Name:       "Sanduíche Atualizado",
+		Price:      15.00,
+		CategoryID: uuid.New(),
 	}
 
 	mockRepo.On("GetByID", ctx, productID).Return(updatedProduct, nil)
