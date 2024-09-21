@@ -27,11 +27,8 @@ func NewAdditionService(additionRepo addition.Repository) AdditionService {
 }
 
 func (s *additionService) CreateAddition(ctx context.Context, a *addition.Addition) error {
-	if a.Name == "" {
-		return errors.New("o nome do acréscimo é obrigatório")
-	}
-	if a.Price < 0 {
-		return errors.New("o preço do acréscimo deve ser não negativo")
+	if err := a.Validate(); err != nil {
+		return err
 	}
 
 	return s.additionRepo.Create(ctx, a)
@@ -57,11 +54,9 @@ func (s *additionService) UpdateAddition(ctx context.Context, a *addition.Additi
 	if a.ID == uuid.Nil {
 		return errors.New("ID do acréscimo é obrigatório")
 	}
-	if a.Name == "" {
-		return errors.New("o nome do acréscimo é obrigatório")
-	}
-	if a.Price < 0 {
-		return errors.New("o preço do acréscimo deve ser não negativo")
+
+	if err := a.Validate(); err != nil {
+		return err
 	}
 
 	existingAddition, err := s.additionRepo.GetByID(ctx, a.ID)
