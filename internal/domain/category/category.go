@@ -8,6 +8,9 @@ import (
 
 var (
 	ErrCategoryNameRequired = errors.New("o nome da categoria é obrigatório")
+	ErrCategoryIdInvalid    = errors.New("ID da categoria inválido")
+	ErrCategoryIdRequired   = errors.New("ID da categoria é obrigatório")
+	ErrCategoryNotFound     = errors.New("categoria não encontrada")
 )
 
 type Category struct {

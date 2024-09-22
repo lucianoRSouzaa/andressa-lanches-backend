@@ -3,7 +3,6 @@ package services
 import (
 	"andressa-lanches/internal/domain/category"
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 )
@@ -36,23 +35,23 @@ func (s *categoryService) CreateCategory(ctx context.Context, c *category.Catego
 
 func (s *categoryService) GetCategoryByID(ctx context.Context, id uuid.UUID) (*category.Category, error) {
 	if id == uuid.Nil {
-		return nil, errors.New("ID da categoria inválido")
+		return nil, category.ErrCategoryIdInvalid
 	}
 
-	category, err := s.categoryRepo.GetByID(ctx, id)
+	c, err := s.categoryRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	if category == nil {
-		return nil, errors.New("categoria não encontrada")
+	if c == nil {
+		return nil, category.ErrCategoryNotFound
 	}
 
-	return category, nil
+	return c, nil
 }
 
 func (s *categoryService) UpdateCategory(ctx context.Context, c *category.Category) error {
 	if c.ID == uuid.Nil {
-		return errors.New("ID da categoria é obrigatório")
+		return category.ErrCategoryIdRequired
 	}
 	if err := c.Validate(); err != nil {
 		return err
@@ -63,7 +62,7 @@ func (s *categoryService) UpdateCategory(ctx context.Context, c *category.Catego
 		return err
 	}
 	if existingCategory == nil {
-		return errors.New("categoria não encontrada")
+		return category.ErrCategoryNotFound
 	}
 
 	return s.categoryRepo.Update(ctx, c)
@@ -71,7 +70,7 @@ func (s *categoryService) UpdateCategory(ctx context.Context, c *category.Catego
 
 func (s *categoryService) DeleteCategory(ctx context.Context, id uuid.UUID) error {
 	if id == uuid.Nil {
-		return errors.New("ID da categoria inválido")
+		return category.ErrCategoryIdInvalid
 	}
 
 	existingCategory, err := s.categoryRepo.GetByID(ctx, id)
@@ -79,7 +78,7 @@ func (s *categoryService) DeleteCategory(ctx context.Context, id uuid.UUID) erro
 		return err
 	}
 	if existingCategory == nil {
-		return errors.New("categoria não encontrada")
+		return category.ErrCategoryNotFound
 	}
 
 	return s.categoryRepo.Delete(ctx, id)
