@@ -7,6 +7,12 @@ MIGRATIONS_DIR := ./db/migrations
 # Variáveis de ambiente
 export DATABASE_URL
 
+# Carregar variáveis do .env
+ifeq (,$(wildcard .env))
+$(error .env file not found)
+endif
+include .env
+export
 
 .PHONY: build
 build:
@@ -83,6 +89,16 @@ setup:
 	@go install github.com/evilmartians/lefthook@latest
 	@echo "Setting up git hooks..."
 	@lefthook install
+
+.PHONY: sonar-scan
+sonar-scan: test
+	@docker run --rm \
+        --network andressa-lanches_default \
+        -e SONAR_HOST_URL="http://sonarqube:9000" \
+        -e SONAR_LOGIN=$(SONAR_LOGIN) \
+        -v "$(PWD):/usr/src" \
+        sonarsource/sonar-scanner-cli \
+        -Dsonar.token=$(SONAR_LOGIN)
 
 # Ajuda
 .PHONY: help
