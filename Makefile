@@ -77,6 +77,13 @@ swag:
 lint:
 	@golangci-lint run
 
+.PHONY: setup
+setup:
+	@echo "Installing Lefthook..."
+	@go install github.com/evilmartians/lefthook@latest
+	@echo "Setting up git hooks..."
+	@lefthook install
+
 # Ajuda
 .PHONY: help
 help:
@@ -93,3 +100,4 @@ help:
 	@echo "  make build              - Compila o aplicativo"
 	@echo "  make run                - Executa o aplicativo"
 	@echo "  make lint               - Executa o linter"
+	@echo "  make setup              - Instala as dependências e configura os ganchos do git"
