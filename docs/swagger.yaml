@@ -1,0 +1,813 @@
+basePath: /
+definitions:
+  addition.Addition:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  category.Category:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  handlers.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  product.Product:
+    properties:
+      category_id:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  sale.Sale:
+    properties:
+      additional_charges:
+        type: number
+      date:
+        type: string
+      discount:
+        type: number
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/sale.SaleItem'
+        type: array
+      total_amount:
+        type: number
+    type: object
+  sale.SaleItem:
+    properties:
+      additions:
+        items:
+          $ref: '#/definitions/addition.Addition'
+        type: array
+      item_id:
+        type: integer
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      sale_id:
+        type: string
+      total_price:
+        type: number
+      unit_price:
+        type: number
+    type: object
+host: localhost:3333
+info:
+  contact:
+    email: lucianorodriguess101@gmail.com
+    name: Luciano Rodrigues De Souza
+  description: API para gerenciar o sistema de lanches da Andressa.
+  title: Andressa Lanches API
+  version: "1.0"
+paths:
+  /additions:
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma lista de todos os acréscimos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/addition.Addition'
+              type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Additions
+      tags:
+      - Additions
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo acréscimo
+      parameters:
+      - description: Acréscimo a ser criado
+        in: body
+        name: addition
+        required: true
+        schema:
+          $ref: '#/definitions/addition.Addition'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/addition.Addition'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create an Addition
+      tags:
+      - Additions
+  /additions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta um acréscimo pelo ID
+      parameters:
+      - description: ID do Acréscimo
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete an Addition
+      tags:
+      - Additions
+    get:
+      consumes:
+      - application/json
+      description: Recupera um único acréscimo pelo seu ID
+      parameters:
+      - description: ID do Acréscimo
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/addition.Addition'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Addition by ID
+      tags:
+      - Additions
+    put:
+      consumes:
+      - application/json
+      description: Atualiza um acréscimo existente pelo ID
+      parameters:
+      - description: ID do Acréscimo
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Acréscimo a ser atualizado
+        in: body
+        name: addition
+        required: true
+        schema:
+          $ref: '#/definitions/addition.Addition'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/addition.Addition'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an Addition
+      tags:
+      - Additions
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica um usuário e retorna um token JWT
+      parameters:
+      - description: Credenciais do Usuário
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - Authentication
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma lista de todas as categorias
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/category.Category'
+              type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova categoria
+      parameters:
+      - description: Categoria a ser criada
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/category.Category'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/category.Category'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a Category
+      tags:
+      - Categories
+  /categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta uma categoria pelo ID
+      parameters:
+      - description: ID da Categoria
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a Category
+      tags:
+      - Categories
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma única categoria pelo seu ID
+      parameters:
+      - description: ID da Categoria
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/category.Category'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Category by ID
+      tags:
+      - Categories
+    put:
+      consumes:
+      - application/json
+      description: Atualiza uma categoria existente pelo ID
+      parameters:
+      - description: ID da Categoria
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Categoria a ser atualizada
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/category.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/category.Category'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a Category
+      tags:
+      - Categories
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma lista de todos os produtos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/product.Product'
+              type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Products
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo produto
+      parameters:
+      - description: Produto a ser criado
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/product.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/product.Product'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a Product
+      tags:
+      - Products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta um produto pelo ID
+      parameters:
+      - description: ID do Produto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a Product
+      tags:
+      - Products
+    get:
+      consumes:
+      - application/json
+      description: Recupera um único produto pelo seu ID
+      parameters:
+      - description: ID do Produto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/product.Product'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Product by ID
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: Atualiza um produto existente pelo ID
+      parameters:
+      - description: ID do Produto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Produto a ser atualizado
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/product.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/product.Product'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a Product
+      tags:
+      - Products
+  /sales:
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma lista de todas as vendas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/sale.Sale'
+              type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Sales
+      tags:
+      - Sales
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova venda
+      parameters:
+      - description: Venda a ser criada
+        in: body
+        name: sale
+        required: true
+        schema:
+          $ref: '#/definitions/sale.Sale'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/sale.Sale'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a Sale
+      tags:
+      - Sales
+  /sales/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deleta uma venda pelo ID
+      parameters:
+      - description: ID da Venda
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a Sale
+      tags:
+      - Sales
+    get:
+      consumes:
+      - application/json
+      description: Recupera uma única venda pelo seu ID
+      parameters:
+      - description: ID da Venda
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/sale.Sale'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Sale by ID
+      tags:
+      - Sales
+securityDefinitions:
+  BearerAuth:
+    description: 'Insira o token JWT no formato: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

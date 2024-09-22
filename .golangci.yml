@@ -18,6 +18,8 @@ issues:
   max-issues-per-linter: 0
   exclude:
     - "error return value not checked.*"
+  exclude-dirs:
+    - "docs/"
 
 linters-settings:
   errcheck:
