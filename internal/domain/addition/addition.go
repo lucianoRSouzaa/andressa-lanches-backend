@@ -9,6 +9,9 @@ import (
 var (
 	ErrAdditionNameRequired  = errors.New("o nome do acréscimo é obrigatório")
 	ErrAdditionPriceRequired = errors.New("o preço do acréscimo deve ser não negativo")
+	ErrAdditionIdInvalid     = errors.New("ID do acréscimo inválido")
+	ErrAdditionNotFound      = errors.New("acréscimo não encontrado")
+	ErrAdditionIdMandatory   = errors.New("ID do acréscimo é obrigatório")
 )
 
 type Addition struct {

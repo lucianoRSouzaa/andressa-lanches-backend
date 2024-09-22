@@ -3,7 +3,6 @@ package services
 import (
 	"andressa-lanches/internal/domain/addition"
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 )
@@ -36,23 +35,23 @@ func (s *additionService) CreateAddition(ctx context.Context, a *addition.Additi
 
 func (s *additionService) GetAdditionByID(ctx context.Context, id uuid.UUID) (*addition.Addition, error) {
 	if id == uuid.Nil {
-		return nil, errors.New("ID do acréscimo inválido")
+		return nil, addition.ErrAdditionIdInvalid
 	}
 
-	addition, err := s.additionRepo.GetByID(ctx, id)
+	a, err := s.additionRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	if addition == nil {
-		return nil, errors.New("acréscimo não encontrado")
+	if a == nil {
+		return nil, addition.ErrAdditionNotFound
 	}
 
-	return addition, nil
+	return a, nil
 }
 
 func (s *additionService) UpdateAddition(ctx context.Context, a *addition.Addition) error {
 	if a.ID == uuid.Nil {
-		return errors.New("ID do acréscimo é obrigatório")
+		return addition.ErrAdditionIdMandatory
 	}
 
 	if err := a.Validate(); err != nil {
@@ -64,7 +63,7 @@ func (s *additionService) UpdateAddition(ctx context.Context, a *addition.Additi
 		return err
 	}
 	if existingAddition == nil {
-		return errors.New("acréscimo não encontrado")
+		return addition.ErrAdditionNotFound
 	}
 
 	return s.additionRepo.Update(ctx, a)
@@ -72,7 +71,7 @@ func (s *additionService) UpdateAddition(ctx context.Context, a *addition.Additi
 
 func (s *additionService) DeleteAddition(ctx context.Context, id uuid.UUID) error {
 	if id == uuid.Nil {
-		return errors.New("ID do acréscimo inválido")
+		return addition.ErrAdditionIdInvalid
 	}
 
 	existingAddition, err := s.additionRepo.GetByID(ctx, id)
@@ -80,7 +79,7 @@ func (s *additionService) DeleteAddition(ctx context.Context, id uuid.UUID) erro
 		return err
 	}
 	if existingAddition == nil {
-		return errors.New("acréscimo não encontrado")
+		return addition.ErrAdditionNotFound
 	}
 
 	return s.additionRepo.Delete(ctx, id)
