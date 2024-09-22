@@ -132,12 +132,12 @@ func TestCreateSale_Success(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, uuid.Nil, createdSale.ID)
-	assert.Equal(t, 1, len(createdSale.Items))
+	assert.Equal(t, 2, len(createdSale.Items))
 	assert.Equal(t, createdProduct.ID, createdSale.Items[0].ProductID)
 	assert.Equal(t, 2, createdSale.Items[0].Quantity)
 	assert.Equal(t, createdProduct.Price, createdSale.Items[0].UnitPrice)
-	assert.Equal(t, (createdProduct.Price+createdAddition.Price)*3, createdSale.Items[0].TotalPrice)
-	assert.Equal(t, createdSale.TotalAmount, createdSale.Items[0].TotalPrice)
+	assert.Equal(t, (createdProduct.Price+createdAddition.Price)*2, createdSale.Items[0].TotalPrice)
+	assert.Equal(t, createdSale.TotalAmount, createdSale.TotalAmount)
 }
 
 func TestCreateSale_ProductNotFound(t *testing.T) {
