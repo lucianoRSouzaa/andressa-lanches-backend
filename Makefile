@@ -73,6 +73,10 @@ coverage: test-cover
 swag:
 	@swag init -g ./cmd/andressa-lanches/main.go
 
+.PHONY: lint
+lint:
+	@golangci-lint run
+
 # Ajuda
 .PHONY: help
 help:
@@ -88,3 +92,4 @@ help:
 	@echo "  make swag               - Gera a documentação da API com Swag"
 	@echo "  make build              - Compila o aplicativo"
 	@echo "  make run                - Executa o aplicativo"
+	@echo "  make lint               - Executa o linter"
