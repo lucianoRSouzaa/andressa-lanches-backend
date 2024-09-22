@@ -1,0 +1,25 @@
+run:
+  tests: true
+  timeout: 5m
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - unused
+  disable:
+    - maligned
+    - nakedret
+    - errcheck
+
+issues:
+  exclude-use-default: false
+  max-same-issues: 5
+  max-issues-per-linter: 0
+  exclude:
+    - "error return value not checked.*"
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
