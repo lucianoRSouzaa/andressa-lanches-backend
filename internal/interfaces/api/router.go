@@ -6,6 +6,7 @@ import (
 	"andressa-lanches/internal/interfaces/api/handlers"
 	"andressa-lanches/internal/interfaces/api/middlewares"
 
+	"github.com/Depado/ginprom"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +20,13 @@ func SetupRouter(
 
 	router.Use(gin.Recovery())
 	router.Use(middlewares.LoggingMiddleware())
+
+	p := ginprom.New(
+		ginprom.Engine(router),
+		ginprom.Subsystem("gin"),
+		ginprom.Path("/metrics"),
+	)
+	router.Use(p.Instrument())
 
 	auth := router.Group("/auth")
 	{
