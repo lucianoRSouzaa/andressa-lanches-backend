@@ -85,9 +85,22 @@ lint:
 
 .PHONY: setup
 setup:
-	@echo "Installing Lefthook..."
+	@echo "Instalando dependências Go..."
+	@go mod download
+
+	@echo "Instalando golangci-lint..."
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+	@echo "Instalando migrate..."
+	@go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+	@echo "Instalando Swag..."
+	@go install github.com/swaggo/swag/cmd/swag@latest
+
+	@echo "Instalando Lefthook..."
 	@go install github.com/evilmartians/lefthook@latest
-	@echo "Setting up git hooks..."
+
+	@echo "Configurando githooks com Lefthook..."
 	@lefthook install
 
 .PHONY: sonar-scan
